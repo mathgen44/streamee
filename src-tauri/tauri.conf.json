@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Streamee",
+  "version": "0.1.0",
+  "identifier": "fr.mathgen.streamee",
+  "build": {
+    "frontendDist": "../ui"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Streamee",
+        "width": 920,
+        "height": 640,
+        "minWidth": 420,
+        "minHeight": 360,
+        "dragDropEnabled": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.ico"],
+    "resources": {
+      "../apo/build/Release/StreameeApo.dll": "apo/StreameeApo.dll",
+      "../scripts/install-apo.ps1": "apo/install-apo.ps1",
+      "../scripts/uninstall-apo.ps1": "apo/uninstall-apo.ps1"
+    },
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "languages": ["French"]
+      }
+    }
+  }
+}

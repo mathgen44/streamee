@@ -1,0 +1,4 @@
+LIBRARY StreameeApo
+EXPORTS
+    DllGetClassObject PRIVATE
+    DllCanUnloadNow   PRIVATE

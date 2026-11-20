@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Streamee</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header class="bar">
+    <div class="brand">Streamee</div>
+
+    <button id="mic" class="mic mic--off" title="État de l'envoi dans le micro">
+      <span class="dot"></span><span id="micText">Micro non configuré</span>
+    </button>
+
+    <label class="vol" title="Volume des sons envoyés dans le micro">
+      <span>🎙</span>
+      <input id="injectVol" type="range" min="0" max="150" step="1">
+    </label>
+    <label class="vol" title="Volume du retour dans ton casque (clic sur 🎧 pour couper)">
+      <button id="monitorToggle" class="icon" aria-pressed="true">🎧</button>
+      <input id="monitorVol" type="range" min="0" max="150" step="1">
+    </label>
+
+    <div class="spacer"></div>
+    <button id="editBtn" class="ghost" aria-pressed="false" title="Mode édition : un clic sur un pad ouvre ses réglages">✎<span class="label"> Édition</span></button>
+    <button id="settingsBtn" class="icon" title="Réglages">⚙</button>
+    <button id="stopBtn" class="stop" title="Couper tous les sons">STOP</button>
+  </header>
+
+  <main id="grid" class="grid"></main>
+
+  <div id="dropHint" class="drop-hint" hidden>Dépose tes sons ici</div>
+  <div id="toast" class="toast" hidden></div>
+
+  <!-- Réglages d'un pad -->
+  <dialog id="padDlg">
+    <form method="dialog" class="dlg">
+      <h2>Pad</h2>
+      <label>Nom <input id="padName" maxlength="40"></label>
+      <div class="field">Couleur <div id="padColors" class="swatches"></div></div>
+      <label>Volume <span id="padVolVal"></span>
+        <input id="padVol" type="range" min="0" max="150" step="1">
+      </label>
+      <label>Nouvel appui pendant la lecture
+        <select id="padMode">
+          <option value="restart">Relancer du début</option>
+          <option value="toggle">Arrêter le son</option>
+          <option value="overlap">Rejouer par-dessus</option>
+        </select>
+      </label>
+      <label class="check"><input id="padLoop" type="checkbox"> Lecture en boucle</label>
+      <div class="field">Raccourci clavier (marche aussi en jeu)
+        <div class="hotkey">
+          <button type="button" id="padHotkey" class="hotkey-btn"></button>
+          <button type="button" id="padHotkeyClear" class="ghost small">Effacer</button>
+        </div>
+      </div>
+      <div class="row">
+        <button type="button" id="padLeft" class="ghost small" title="Déplacer vers la gauche">◀</button>
+        <button type="button" id="padRight" class="ghost small" title="Déplacer vers la droite">▶</button>
+        <div class="spacer"></div>
+        <button type="button" id="padDelete" class="danger small">Supprimer</button>
+      </div>
+      <div class="row end">
+        <button value="cancel" class="ghost">Annuler</button>
+        <button id="padSave" value="save" class="primary">Enregistrer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Réglages généraux -->
+  <dialog id="setDlg">
+    <form method="dialog" class="dlg">
+      <h2>Réglages</h2>
+      <section class="apo">
+        <h3>Envoi dans le micro</h3>
+        <p id="apoState" class="muted"></p>
+        <p class="muted">Streamee pose un petit filtre audio sur ton micro : les sons partent avec ta voix
+          dans tous les jeux, Discord ou OBS, sans micro virtuel. Windows demandera l'autorisation administrateur
+          et le son sera coupé deux secondes le temps de redémarrer le service audio.</p>
+        <div class="row">
+          <button type="button" id="apoInstall" class="primary small">Choisir le micro…</button>
+          <button type="button" id="apoUninstall" class="ghost small">Retirer de tous les micros</button>
+        </div>
+      </section>
+      <label>Retour casque
+        <select id="monitorDevice"></select>
+      </label>
+      <div class="field">Raccourci « tout couper »
+        <div class="hotkey">
+          <button type="button" id="stopHotkey" class="hotkey-btn"></button>
+          <button type="button" id="stopHotkeyClear" class="ghost small">Effacer</button>
+        </div>
+      </div>
+      <label>Colonnes de pads
+        <input id="columns" type="number" min="2" max="10">
+      </label>
+      <div class="row end">
+        <button value="cancel" class="ghost">Fermer</button>
+        <button value="save" class="primary">Enregistrer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
