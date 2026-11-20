@@ -3,6 +3,18 @@
 Interface légère pour streamers. Première fonction : **un pad de sons qui partent directement dans ton micro**,
 avec ta voix, dans n'importe quel jeu (chat de proximité), Discord ou OBS, **sans micro virtuel**.
 
+![Le pad de sons de Streamee](docs/screenshots/main.png)
+
+## Captures
+
+| Mode édition : glisser un pad sur une autre case | Fiche d'un pad : couleur, icône ou image, volume, raccourci |
+|---|---|
+| ![Mode édition](docs/screenshots/edit.png) | ![Fiche d'un pad](docs/screenshots/pad.png) |
+
+| Réglages : choix du micro, retour casque, taille de la grille |
+|---|
+| ![Réglages](docs/screenshots/settings.png) |
+
 ## Comment ça marche
 
 Les solutions habituelles (Virtual Audio Cable, VoiceMeeter) ajoutent un faux micro qu'il faut choisir partout,
@@ -24,6 +36,7 @@ Streamee (pad)  ──►  tampon partagé  ──►  filtre APO sur le micro  
 
 ## Utilisation
 
+0. Télécharge l'installateur depuis la page [Releases](https://github.com/mathgen44/streamee/releases).
 1. Lance Streamee, glisse des sons dans la fenêtre (MP3, WAV, FLAC, OGG, M4A…).
 2. **⚙ Réglages → Envoi dans le micro** : choisis ton micro puis **Installer sur ce micro**.
    Windows demande l'autorisation administrateur, et le service audio redémarre (deux secondes de coupure).
