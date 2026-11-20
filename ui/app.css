@@ -91,14 +91,34 @@ body.editing #editBtn { background: var(--warn); border-color: var(--warn); colo
 /* ---------- Grille de pads */
 .grid {
   flex: 1;
+  min-height: 0;
   overflow: auto;
   padding: 12px;
   display: grid;
   grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-  grid-auto-rows: minmax(84px, 1fr);
+  /* Les lignes se partagent la hauteur ; au-delà, la grille défile. */
+  grid-template-rows: repeat(var(--rows), minmax(76px, 1fr));
   gap: 10px;
-  align-content: start;
 }
+
+/* Case vide */
+.cell {
+  border: 2px dashed var(--line);
+  border-radius: var(--radius);
+  background: transparent;
+  color: transparent;
+  font-size: 22px;
+  min-height: 76px;
+  transition: color .1s, border-color .1s;
+}
+.cell:hover, body.editing .cell { color: var(--muted); }
+.cell:hover { border-color: var(--accent); color: var(--text); }
+.cell.first { color: var(--muted); font-size: 13px; padding: 8px; }
+.drop-target { outline: 3px solid var(--warn) !important; outline-offset: -3px; }
+
+.rows-ctl { display: none; align-items: center; gap: 4px; font-size: 13px; color: var(--muted); flex: none; }
+body.editing .rows-ctl { display: flex; }
+.rows-ctl button { padding: 2px 9px; }
 
 .pad {
   position: relative;
@@ -110,10 +130,30 @@ body.editing #editBtn { background: var(--warn); border-color: var(--warn); colo
   text-align: left;
   overflow: hidden;
   display: flex; flex-direction: column; justify-content: space-between;
-  min-height: 84px;
+  min-height: 76px;
   transition: transform .06s, filter .1s;
-  text-shadow: 0 1px 2px rgba(0,0,0,.45);
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
+  touch-action: none;
 }
+.pad.dragging { transition: none; z-index: 10; opacity: .85; box-shadow: 0 10px 30px rgba(0,0,0,.6); }
+
+/* Image en fond, assombrie en bas pour lire le nom */
+.pic { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.pad.has-pic::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 35%, rgba(0,0,0,.75));
+}
+.pad.has-pic .name, .pad.has-pic .meta { z-index: 1; }
+.pad.has-pic { justify-content: flex-end; gap: 4px; }
+.pad.has-pic { border: 3px solid var(--c); }
+
+/* Icône (emoji) au centre */
+.icon-big {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-size: clamp(26px, 5vh, 52px); pointer-events: none; text-shadow: none;
+  padding-bottom: 14px;
+}
+.pad.has-icon .name { margin-top: auto; }
 .pad:hover { filter: brightness(1.08); }
 .pad:active { transform: scale(.97); }
 .pad .name { font-weight: 600; font-size: 15px; word-break: break-word; position: relative; }
@@ -125,25 +165,10 @@ body.editing #editBtn { background: var(--warn); border-color: var(--warn); colo
   pointer-events: none;
 }
 .pad.playing { box-shadow: 0 0 0 3px #fff inset; }
+.pad .progress { z-index: 1; }
 .pad.broken { filter: grayscale(.9) brightness(.6); }
 body.editing .pad { outline: 2px dashed rgba(255,255,255,.5); outline-offset: -5px; }
 
-.add {
-  border: 2px dashed var(--line);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--muted);
-  min-height: 84px;
-}
-.add:hover { color: var(--text); border-color: var(--accent); }
-
-.empty {
-  grid-column: 1 / -1;
-  text-align: center;
-  color: var(--muted);
-  padding: 40px 10px;
-  line-height: 1.6;
-}
 
 .drop-hint {
   position: fixed; inset: 0;
@@ -165,7 +190,8 @@ body.editing .pad { outline: 2px dashed rgba(255,255,255,.5); outline-offset: -5
 dialog {
   background: var(--panel); color: var(--text);
   border: 1px solid var(--line); border-radius: 12px;
-  padding: 0; width: min(440px, 94vw);
+  padding: 0; width: min(460px, 94vw);
+  max-height: 94vh; overflow: auto;
 }
 dialog::backdrop { background: rgba(0,0,0,.6); }
 .dlg { display: flex; flex-direction: column; gap: 12px; padding: 18px; }
@@ -188,6 +214,24 @@ dialog::backdrop { background: rgba(0,0,0,.6); }
   border: 2px solid transparent; background: var(--c);
 }
 .swatches button[aria-checked="true"] { border-color: #fff; }
+
+.row.two > label { flex: 1; }
+.small-text { font-size: 12px; }
+
+/* Icône / image dans la fiche du pad */
+.visual { display: flex; gap: 12px; align-items: flex-start; }
+.preview {
+  position: relative; overflow: hidden; flex: none;
+  width: 76px; height: 76px; border-radius: var(--radius);
+  background: var(--c, var(--accent)); color: rgba(255,255,255,.7);
+  display: grid; place-items: center; font-size: 12px;
+}
+.preview .icon-big { padding-bottom: 0; font-size: 38px; }
+.visual-ctl { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.emojis { display: flex; flex-wrap: wrap; gap: 2px; }
+.emojis button { padding: 2px 4px; font-size: 18px; line-height: 1; background: transparent; border-color: transparent; }
+.emojis button:hover { background: var(--panel-2); border-color: var(--line); }
+.dlg input.emoji-input { width: 80px; padding: 4px 8px; }
 
 .hotkey { display: flex; gap: 8px; }
 .hotkey-btn { flex: 1; text-align: left; font-family: Consolas, monospace; color: var(--text); }

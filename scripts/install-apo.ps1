@@ -16,15 +16,38 @@
 
 .PARAMETER EndpointId
   GUID du micro ({xxxxxxxx-...}). Sans ce paramètre, le script propose la liste des micros.
+
+.PARAMETER FromApp
+  Lancé par l'application : fermeture automatique si tout va bien, pause sur erreur.
 #>
 #Requires -RunAsAdministrator
 [CmdletBinding()]
 param(
-    [string]$DllPath = (Join-Path $PSScriptRoot 'StreameeApo.dll'),
-    [string]$EndpointId
+    [string]$DllPath,
+    [string]$EndpointId,
+    [switch]$FromApp
 )
 
 $ErrorActionPreference = 'Stop'
+
+# Journal, utile si la fenêtre se ferme trop vite : %TEMP%\streamee-install.log
+try { Start-Transcript -Path (Join-Path $env:TEMP 'streamee-install.log') -Force | Out-Null } catch { }
+
+# En cas d'erreur, la fenêtre reste ouverte pour qu'on puisse la lire (lancé depuis Streamee).
+# Le trap doit être au niveau du script : placé dans un bloc if, il ne s'appliquerait qu'à ce bloc.
+trap {
+    Write-Host ''
+    Write-Host "Erreur : $_" -ForegroundColor Red
+    Write-Host $_.InvocationInfo.PositionMessage -ForegroundColor DarkGray
+    try { Stop-Transcript | Out-Null } catch { }
+    if ($FromApp) { Read-Host 'Appuie sur Entrée pour fermer' }
+    exit 1
+}
+
+# $PSScriptRoot n'est pas encore défini dans les valeurs par défaut de param() sous PowerShell 5.1.
+# Le chemin peut arriver au format long « \\?\D:\... », que Split-Path/Join-Path ne gèrent pas : on passe par .NET.
+if (-not $DllPath) { $DllPath = [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($MyInvocation.MyCommand.Path), 'StreameeApo.dll') }
+if ($DllPath.StartsWith('\\?\')) { $DllPath = $DllPath.Substring(4) }
 
 $Clsid        = '{EE91D2D7-78FB-42EB-9BB7-3190B21658D2}'
 $InstallDir   = Join-Path $env:ProgramFiles 'Streamee'
@@ -240,3 +263,5 @@ finally {
 Write-Host ''
 Write-Host "Streamee est installé sur « $($target.Name) »." -ForegroundColor Green
 Write-Host 'Les sons de Streamee sortiront par ce micro dès qu''un logiciel l''utilise (jeu, Discord, OBS...).'
+try { Stop-Transcript | Out-Null } catch { }
+if ($FromApp) { Start-Sleep -Seconds 3 }

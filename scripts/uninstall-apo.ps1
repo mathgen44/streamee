@@ -4,9 +4,23 @@
 #>
 #Requires -RunAsAdministrator
 [CmdletBinding()]
-param([switch]$KeepData)
+param([switch]$KeepData, [switch]$FromApp)
 
 $ErrorActionPreference = 'Stop'
+
+# Journal, utile si la fenêtre se ferme trop vite : %TEMP%\streamee-uninstall.log
+try { Start-Transcript -Path (Join-Path $env:TEMP 'streamee-uninstall.log') -Force | Out-Null } catch { }
+
+# En cas d'erreur, la fenêtre reste ouverte pour qu'on puisse la lire (lancé depuis Streamee).
+# Le trap doit être au niveau du script : placé dans un bloc if, il ne s'appliquerait qu'à ce bloc.
+trap {
+    Write-Host ''
+    Write-Host "Erreur : $_" -ForegroundColor Red
+    Write-Host $_.InvocationInfo.PositionMessage -ForegroundColor DarkGray
+    try { Stop-Transcript | Out-Null } catch { }
+    if ($FromApp) { Read-Host 'Appuie sur Entrée pour fermer' }
+    exit 1
+}
 
 $Clsid       = '{EE91D2D7-78FB-42EB-9BB7-3190B21658D2}'
 $InstallDir  = Join-Path $env:ProgramFiles 'Streamee'
@@ -61,3 +75,5 @@ finally {
     Start-Service -Name audiosrv
 }
 Write-Host 'Streamee est désinstallé de tous les micros.' -ForegroundColor Green
+try { Stop-Transcript | Out-Null } catch { }
+if ($FromApp) { Start-Sleep -Seconds 3 }

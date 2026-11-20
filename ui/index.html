@@ -24,6 +24,11 @@
     </label>
 
     <div class="spacer"></div>
+    <div class="rows-ctl edit-only" title="Nombre de lignes de pads">
+      <button id="rowLess" class="ghost small" title="Retirer une ligne vide">−</button>
+      <span id="gridSize"></span>
+      <button id="rowMore" class="ghost small" title="Ajouter une ligne">+</button>
+    </div>
     <button id="editBtn" class="ghost" aria-pressed="false" title="Mode édition : un clic sur un pad ouvre ses réglages">✎<span class="label"> Édition</span></button>
     <button id="settingsBtn" class="icon" title="Réglages">⚙</button>
     <button id="stopBtn" class="stop" title="Couper tous les sons">STOP</button>
@@ -31,7 +36,7 @@
 
   <main id="grid" class="grid"></main>
 
-  <div id="dropHint" class="drop-hint" hidden>Dépose tes sons ici</div>
+  <div id="dropHint" class="drop-hint" hidden></div>
   <div id="toast" class="toast" hidden></div>
 
   <!-- Réglages d'un pad -->
@@ -40,6 +45,19 @@
       <h2>Pad</h2>
       <label>Nom <input id="padName" maxlength="40"></label>
       <div class="field">Couleur <div id="padColors" class="swatches"></div></div>
+      <div class="field">Icône ou image
+        <div class="visual">
+          <div id="padPreview" class="preview"></div>
+          <div class="visual-ctl">
+            <div id="padEmojis" class="emojis"></div>
+            <div class="row">
+              <input id="padIcon" class="emoji-input" maxlength="8" placeholder="Emoji" title="Colle ou tape un emoji (Win + . ouvre le clavier d'emojis)">
+              <button type="button" id="padImage" class="ghost small">Image…</button>
+              <button type="button" id="padVisualClear" class="ghost small">Retirer</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <label>Volume <span id="padVolVal"></span>
         <input id="padVol" type="range" min="0" max="150" step="1">
       </label>
@@ -58,8 +76,7 @@
         </div>
       </div>
       <div class="row">
-        <button type="button" id="padLeft" class="ghost small" title="Déplacer vers la gauche">◀</button>
-        <button type="button" id="padRight" class="ghost small" title="Déplacer vers la droite">▶</button>
+        <span class="muted small-text">Pour déplacer un pad : mode ✎ Édition, puis glisse-le sur une autre case.</span>
         <div class="spacer"></div>
         <button type="button" id="padDelete" class="danger small">Supprimer</button>
       </div>
@@ -80,8 +97,11 @@
         <p class="muted">Streamee pose un petit filtre audio sur ton micro : les sons partent avec ta voix
           dans tous les jeux, Discord ou OBS, sans micro virtuel. Windows demandera l'autorisation administrateur
           et le son sera coupé deux secondes le temps de redémarrer le service audio.</p>
+        <label>Micro
+          <select id="apoDevice"></select>
+        </label>
         <div class="row">
-          <button type="button" id="apoInstall" class="primary small">Choisir le micro…</button>
+          <button type="button" id="apoInstall" class="primary small">Installer sur ce micro</button>
           <button type="button" id="apoUninstall" class="ghost small">Retirer de tous les micros</button>
         </div>
       </section>
@@ -94,9 +114,14 @@
           <button type="button" id="stopHotkeyClear" class="ghost small">Effacer</button>
         </div>
       </div>
-      <label>Colonnes de pads
-        <input id="columns" type="number" min="2" max="10">
-      </label>
+      <div class="row two">
+        <label>Colonnes
+          <input id="columns" type="number" min="1" max="12">
+        </label>
+        <label>Lignes
+          <input id="rows" type="number" min="1" max="30">
+        </label>
+      </div>
       <div class="row end">
         <button value="cancel" class="ghost">Fermer</button>
         <button value="save" class="primary">Enregistrer</button>

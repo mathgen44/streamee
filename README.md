@@ -25,11 +25,14 @@ Streamee (pad)  ──►  tampon partagé  ──►  filtre APO sur le micro  
 ## Utilisation
 
 1. Lance Streamee, glisse des sons dans la fenêtre (MP3, WAV, FLAC, OGG, M4A…).
-2. **⚙ Réglages → Choisir le micro…** : Windows demande l'autorisation administrateur, puis tu choisis ton micro.
-   Le service audio redémarre (deux secondes de coupure).
+2. **⚙ Réglages → Envoi dans le micro** : choisis ton micro puis **Installer sur ce micro**.
+   Windows demande l'autorisation administrateur, et le service audio redémarre (deux secondes de coupure).
 3. La pastille en haut passe au vert (« en direct ») dès qu'un logiciel utilise le micro : les sons y partent.
 
-- Clic sur un pad : lecture. Clic droit (ou mode **✎ Édition**) : nom, couleur, volume, boucle, comportement au second appui, raccourci.
+- Clic sur un pad : lecture. Clic droit (ou mode **✎ Édition**) : nom, couleur, icône ou image, volume, boucle, comportement au second appui, raccourci.
+- La grille fait *colonnes × lignes* (⚙ Réglages, ou **− / +** en mode Édition). Clic sur une case vide, ou fichier glissé dessus : le son s'y place.
+- En mode Édition, glisse un pad sur une autre case pour le déplacer (s'il y en a déjà un, ils échangent leur place).
+- Glisse une image (PNG, JPG, GIF, WebP, SVG…) sur un pad pour l'illustrer.
 - **Raccourcis globaux** : ils marchent même quand le jeu a le focus (`Ctrl+Alt+Retour` coupe tout par défaut).
 - Deux volumes : 🎙 ce que les autres entendent, 🎧 ce que tu entends.
 - **Retirer de tous les micros** remet exactement les réglages d'origine.

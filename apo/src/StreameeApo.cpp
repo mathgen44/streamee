@@ -116,7 +116,7 @@ HRESULT STDMETHODCALLTYPE StreameeApo::IsOutputFormatSupported(IAudioMediaType*,
 
 HRESULT STDMETHODCALLTYPE StreameeApo::GetInputChannelCount(UINT32* pu32ChannelCount) {
     if (!pu32ChannelCount) return E_POINTER;
-    if (!m_locked) return APOERR_NOT_LOCKED;
+    if (!m_locked) return APOERR_ALREADY_UNLOCKED;
     *pu32ChannelCount = m_channels;
     return S_OK;
 }
@@ -125,7 +125,7 @@ HRESULT STDMETHODCALLTYPE StreameeApo::GetInputChannelCount(UINT32* pu32ChannelC
 
 HRESULT STDMETHODCALLTYPE StreameeApo::LockForProcess(UINT32 u32NumInputConnections, APO_CONNECTION_DESCRIPTOR** ppInputConnections,
                                                       UINT32 u32NumOutputConnections, APO_CONNECTION_DESCRIPTOR** ppOutputConnections) {
-    if (m_locked) return APOERR_ALREADY_LOCKED;
+    if (m_locked) return APOERR_APO_LOCKED;
     if (u32NumInputConnections != 1 || u32NumOutputConnections != 1 || !ppInputConnections || !ppOutputConnections)
         return APOERR_NUM_CONNECTIONS_INVALID;
 
@@ -147,7 +147,7 @@ HRESULT STDMETHODCALLTYPE StreameeApo::LockForProcess(UINT32 u32NumInputConnecti
 }
 
 HRESULT STDMETHODCALLTYPE StreameeApo::UnlockForProcess() {
-    if (!m_locked) return APOERR_NOT_LOCKED;
+    if (!m_locked) return APOERR_ALREADY_UNLOCKED;
     m_locked = false;
     return S_OK;
 }
